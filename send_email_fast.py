@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from time import gmtime, strftime
  
 USERNAME = "doorbellding@gmail.com"
-PASSWORD = "doorbell1"
+PASSWORD = "doorbell2"
 MAILTO  = "in06khattab@gmail.com"
 
 msg = MIMEText("Hi, \n\nSomeone knocked on your door at "+strftime("%l:%M %p on %d-%m-%Y")+".\n\nHave a great day!")
