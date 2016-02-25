@@ -9,7 +9,7 @@ from time import gmtime, strftime
 import os
  
 USERNAME = "doorbellding@gmail.com"
-PASSWORD = "doorbell1"
+PASSWORD = "doorbell2"
 MAILTO="in06khattab@gmail.com"
 
 def sendMail():
