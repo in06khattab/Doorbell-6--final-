@@ -1,13 +1,15 @@
 import urllib2
+
+
 def check_internet():
     try:
-        header = {"pragma" : "no-cache"} # Tells the server to send fresh copy
+        header = {"pragma": "no-cache"}  # Tells the server to send fresh copy
         req = urllib2.Request("http://www.google.com", headers=header)
-        response=urllib2.urlopen(req,timeout=2)
-        print "you are connected"
+        urllib2.urlopen(req, timeout=2)
+        print( "you are connected")
         return True
     except urllib2.URLError as err:
-        print err
+        print(err)
         
         
-print check_internet()
+print(check_internet())

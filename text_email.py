@@ -21,27 +21,27 @@ lcd.message("Welcome to your\ndoorbell")
 sleep(1)
 
 
-
 def internet_on():
     try:
-        response=urllib2.urlopen('http://www.google.com',timeout=10)
+        urllib2.urlopen('http://www.google.com', timeout=10)
         return True
-    except urllib2.URLError as err: pass
+    except urllib2.URLError as err:
+        pass
     return False
-        
+
+
 lcd.clear()
-if internet_on()==True:
+if internet_on():
     lcd.message("Internet is set\nup :)")
 else:
     lcd.message("No internet use\nDoorbell wifi")
-    
 
 while True:
-    if GPIO.input(14) == False: #button pressed
+    if not GPIO.input(14):  # button pressed
         lcd.clear()
         lcd.message("Ding Dong at\n")
         lcd.message(strftime("%d-%m-%Y %H:%M:%S"))
-        os.system("sudo python zapier_webhook.py") #put a space within the quote after .py to insert an argument
-        os.system("sudo python send_email.py") #put a space within the quote after .py to insert an argument
-        
+        os.system("sudo python zapier_webhook.py")  # put a space within the quote after .py to insert an argument
+        os.system("sudo python send_email.py")  # put a space within the quote after .py to insert an argument
+
         time.sleep(0.2)
