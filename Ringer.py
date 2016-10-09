@@ -2,13 +2,12 @@ from subprocess import call
 from datetime import datetime
 from time import sleep
 import picamera
-import send_email_attachment
+import os
+from send_email_attachment import sendmail
+from tweet import tweet
 
 
 class Ringer(object):
-    # camera = picamera.PiCamera()
-
-    # Set my picam
 
     def capture(self):
         datetimestamp = datetime.now().isoformat()
@@ -30,10 +29,12 @@ class Ringer(object):
 class FamilyOrFriend(Ringer):
     def respond(self):
         super(FamilyOrFriend, self).respond()
-        mp3sound = "/home/pi/doorbell/sounds/beep-01.mp3"
+        mp3sound = "sounds/beep-01.mp3"
         call(["omxplayer",mp3sound, "-o", "local"])
-# Todo1 make this work:        send_email_attachment
-# Todo1 make this work:        send_email_attachment
+# Todo2 make this work, Ekiga.net and Twinkle
+#         os.system("./call.sh")
+        sendmail()
+        tweet()  # Still only tweets with Ahmad's Twitter-app. Mine does not authenticate.
 
 class Salesman(Ringer):
     def respond(self):
@@ -45,12 +46,12 @@ class Salesman(Ringer):
 class Deliverer(Ringer):
     def respond(self):
         super(Deliverer, self).respond()
-        mp3sound = "/home/pi/doorbell/sounds/beep-03.mp3"
+        mp3sound = "sounds/beep-03.mp3"
         call(["omxplayer",mp3sound, "-o", "local"])
 
 
 class HansOrGrietje(Ringer):
     def respond(self):
         super(HansOrGrietje, self).respond()
-        mp3sound = "/home/pi/doorbell/sounds/beep-04.mp3"
+        mp3sound = "sounds/knibbelknabbelknuisje.amr"
         call(["omxplayer",mp3sound, "-o", "local"])

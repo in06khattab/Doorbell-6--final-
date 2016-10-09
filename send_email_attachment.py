@@ -9,11 +9,12 @@ from time import gmtime, strftime
 import os
 
 USERNAME = "doorbellding@gmail.com"
-PASSWORD = "doorbell4"
+PASSWORD = "doorbell2"
 MAILTO = "tim@tieka.nl"
 
 
 def sendmail():
+    print('Starting sendmail\n')
     msg = MIMEMultipart()
     text = "Hi, \n\nSomeone knocked on your door at " + strftime("%l:%M %p on %d-%m-%Y") + ".\n\nHave a great day!"
     msg['to'] = MAILTO
@@ -28,14 +29,13 @@ def sendmail():
     part.add_header('Content-Disposition', 'attachment; filename="photo.jpg"')
 
     msg.attach(part)
-
+    print('Het bericht is:' + str(msg.as_string))
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.ehlo_or_helo_if_needed()
     server.starttls()
     server.ehlo_or_helo_if_needed()
     server.login(USERNAME, PASSWORD)
     server.sendmail(USERNAME, MAILTO, msg.as_string())
+    print('\nVerzonden')
     server.quit()
 
-
-sendmail()
