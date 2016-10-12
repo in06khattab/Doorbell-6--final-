@@ -23,7 +23,8 @@ def sendmail():
 
     msg.attach(MIMEText(text))
     part = MIMEBase('application', "octet-stream")
-    part.set_payload(open("image.jpg", "rb").read())
+    mostrecentfile = '/home/pi/camera/images/mostrecent.jpg'
+    part.set_payload(open(mostrecentfile, "rb").read())
     Encoders.encode_base64(part)
 
     part.add_header('Content-Disposition', 'attachment; filename="photo.jpg"')

@@ -5,13 +5,10 @@ import picamera
 import os
 from send_email_attachment import sendmail
 from tweet import tweet
+from shutil import copyfile
 
 
 class Ringer(object):
-
-    def capture(self):
-        datetimestamp = datetime.now().isoformat()
-        self.camera.capture('/home/pi/camera/images/visitor%s.jpg' % datetimestamp)
 
     def __init__(self):
         self.camera = picamera.PiCamera()
@@ -22,8 +19,12 @@ class Ringer(object):
 
     def respond(self):
         datetimestamp = datetime.now().isoformat()
-        self.camera.capture('/home/pi/camera/images/visitor%s.jpg' % datetimestamp)
+        newfile = '/home/pi/camera/images/visitor%s.jpg' % datetimestamp
+        mostrecentfile = '/home/pi/camera/images/mostrecent.jpg'
+        self.camera.capture(newfile)
         self.camera.close()
+        # os.remove(mostrecentfile)
+        copyfile(newfile, mostrecentfile)
 
 
 class FamilyOrFriend(Ringer):
@@ -33,8 +34,8 @@ class FamilyOrFriend(Ringer):
         call(["omxplayer",mp3sound, "-o", "local"])
 # Todo2 make this work, Ekiga.net and Twinkle
 #         os.system("./call.sh")
-        sendmail()
-        tweet()  # Still only tweets with Ahmad's Twitter-app. Mine does not authenticate.
+        sendmail()  # Works fine.
+        tweet()  # Works fine.
 
 class Salesman(Ringer):
     def respond(self):
