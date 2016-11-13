@@ -1,27 +1,31 @@
 #!/usr/bin/python
 import urllib2
-from time import sleep
 from Adafruit_CharLCDPlate import Adafruit_CharLCDPlate
-import RPi.GPIO as GPIO
-import time
-from time import gmtime, strftime
-import os
-import subprocess
+from gpiozero import Button
+from Ringer import FamilyOrFriend, Salesman, Deliverer, HansOrGrietje
+from RingerSingleButton import SingleButton
 
-EMAIL = 'in06khattab@gmail.com'
+EMAIL = 'in06khattab@gmail.com; timvans@gmail.com'
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(7, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+b7red = Button(7)
+# Set 4 doorbell-buttons connected to GPIO's 16, 18, 19 & 20, while 17 is connected to Ground
+b21blue = Button(21)
+b20yellow = Button(20)
+b16green = Button(16)
+b12white = Button(12)
 
 # Initialize the LCD plate.  
-lcd = Adafruit_CharLCDPlate()
+try:
+    lcd = Adafruit_CharLCDPlate()
+    lcd.clear()
+    lcdIsOperational = True
+except:
+    lcdIsOperational = False
 
-# Clear display and show greeting, pause 1 sec
-lcd.clear()
-lcd.backlight(lcd.ON)
-lcd.message("Welcome to your\ndoorbell")
-sleep(1)
+if lcdIsOperational:  # Clear display and show greeting, pause 1 sec
+    lcd.clear()
+    lcd.backlight(lcd.ON)
+    lcd.message("Welcome to your\ndoorbell")
 
 
 def internet_on():
@@ -33,57 +37,31 @@ def internet_on():
     return False
 
 
-lcd.clear()
+# lcd.clear()
 if internet_on():
-    lcd.message("Internet is set\nup :)")
+    print('Internet is up')
+    # lcd.message("Internet is set\nup :)")
 else:
-    lcd.message("No internet use\nDoorbell wifi")
+    print('Internet is down')
+    # lcd.message("No internet use\nDoorbell wifi")
 
-os.system("./call.sh")
 while True:
-    if not GPIO.input(7):  # button pressed
-        print("button pressed")
-        time1 = strftime("%l:%M %p on %d-%m-%Y")
-        message = "Ding Dong at " + strftime("%l:%M %p on %d-%m-%Y")
-        time2 = strftime(" %l:%M %p")
-
-        lcd.clear()
-        lcd.message("Ding Dong at\n")
-        lcd.message(strftime("%d-%m-%Y %H:%M:%S"))
-        os.system("./call.sh")
-        os.system("sudo python camera.py")
-        # os.system("sudo python send_email_fast.py") #put a space within the quote after .py to insert an argument
-        os.system("sudo python send_email_attachment.py")
-
-        os.system(
-            "sudo python zapier_webhook.py" + time2)  # put a space within the quote after .py to insert an argument
-        os.system('sudo echo ' + message + ' | sendxmpp -v -t ' + EMAIL)  # send hangouts message
-        os.system("sudo python tweet.py ")
-
-        time.sleep(0.2)
-
-    # Local video
-    if lcd.buttonPressed(lcd.LEFT):
-        proc = subprocess.Popen([
-            "raspivid -t 0 -b 2000000 -n -o - | gst-launch-1.0 -e -vvvv fdsrc ! h264parse ! flvmux ! rtmpsink location=rtmp://localhost/rtmp/live"],
-            shell=True)
-        print("aa")
-        (out, err) = proc.communicate()
-        print("program output:", out)
-
-    if lcd.buttonPressed(lcd.RIGHT):
-        print("aa")
-        proc = subprocess.Popen(["pkill gst-launch-1.0; pkill raspivid"], shell=True)
-        (out, err) = proc.communicate()
-        print("program output:", out)
-        # os.system("raspivid -o - -t 0 -w 1270 -h 720 -fps 25 -b 600000 -g 50 | ./ffmpeg -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i /dev/zero -f h264 -i - -vcodec copy -acodec aac -ab 128k -g 50 -strict experimental -f flv rtmp://a.rtmp.youtube.com/live2/DoorBellDing.rpt9-wuhk-ctju-dgxw")
-
-    if lcd.buttonPressed(lcd.DOWN):
-        lcd.clear()
-
-        proc = subprocess.Popen(["/sbin/ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'"],
-                                stdout=subprocess.PIPE, shell=True)
-        (out, err) = proc.communicate()
-        # print "program output:", out
-
-        lcd.message(out)
+    doorbell_pressed = False
+    while not doorbell_pressed:
+        if b21blue.is_pressed:
+            ringer = FamilyOrFriend()
+            doorbell_pressed = True
+        if b20yellow.is_pressed:
+            ringer = Salesman()
+            doorbell_pressed = True
+        if b16green.is_pressed:
+            ringer = Deliverer()
+            doorbell_pressed = True
+        if b12white.is_pressed:
+            ringer = HansOrGrietje()
+            doorbell_pressed = True
+        if b7red.is_pressed:
+            ringer = SingleButton()
+            doorbell_pressed = True
+    if doorbell_pressed:
+        ringer.respond()
