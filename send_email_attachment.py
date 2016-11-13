@@ -7,10 +7,12 @@ from email.Utils import COMMASPACE, formatdate
 from email import Encoders
 from time import gmtime, strftime
 import os
+# from constants import _const
 
 USERNAME = "doorbellding@gmail.com"
 PASSWORD = "doorbell2"
 MAILTO = "tim@tieka.nl"
+MOSTRECENTSNAPSHOT = '/home/pi/camera/images/mostrecent.jpg'
 
 
 def sendmail():
@@ -23,8 +25,7 @@ def sendmail():
 
     msg.attach(MIMEText(text))
     part = MIMEBase('application', "octet-stream")
-    mostrecentfile = '/home/pi/camera/images/mostrecent.jpg'
-    part.set_payload(open(mostrecentfile, "rb").read())
+    part.set_payload(open(MOSTRECENTSNAPSHOT, "rb").read())
     Encoders.encode_base64(part)
 
     part.add_header('Content-Disposition', 'attachment; filename="photo.jpg"')
