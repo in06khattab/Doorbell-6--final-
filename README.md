@@ -18,7 +18,6 @@ Todo’s and Features of the internet-connected, intercom-doorbell:
 -	Intercom with Sound XXXXX See “Intercom to any device at home”
 -	Intercom with Sound&Image XXXXX See “Intercom to any device at home”
 
-
 Doorbell
 Started with the raspberrypi doorbell project, image and manual on this site and the github-source.
 Used also this (https://www.raspberrypi.org/learning/push-button-stop-motion/worksheet/) and this (https://www.raspberrypi.org/learning/getting-started-with-picamera/0) webblogs.
