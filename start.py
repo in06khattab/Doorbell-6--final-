@@ -29,6 +29,8 @@ if lcdIsOperational:  # Clear display and show greeting, pause 1 sec
 
 
 def internet_on():
+
+
     """This function tests if there is a connection to the internet.
     Will return a boolean, true when connected, false if there is no connection."""
     try:
